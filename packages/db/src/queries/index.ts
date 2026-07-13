@@ -1,8 +1,12 @@
-import { insertUser, getUserByEmail } from "./users-queries.js";
-import { insertSession } from "./sessions-queries.js";
+// Naming convention: actionDescription
+
+import { insertUser, selectUserByEmail } from "./users-queries.js";
+import { insertSession, selectSessionById, deleteAllUserSessions } from "./sessions-queries.js";
 
 export {
   insertSession,
   insertUser,
-  getUserByEmail
+  selectUserByEmail,
+  selectSessionById,
+  deleteAllUserSessions
 };

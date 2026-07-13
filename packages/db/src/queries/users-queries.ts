@@ -13,7 +13,7 @@ export const insertUser = async (email: UserType["email"], password: UserType["p
   }
 };
 
-export const getUserByEmail = async (email: UserType["email"]) => {
+export const selectUserByEmail = async (email: UserType["email"]) => {
   try {
     const fetchedUser = await db
       .select()

@@ -42,7 +42,7 @@ export const authSigninPost = async (c: Context) => {
     throw new HTTPException(401, { message: "Missing or malformed credentials" });
   }
 
-  const userRecord = await query.getUserByEmail(body.email);
+  const userRecord = await query.selectUserByEmail(body.email);
 
   if (!userRecord) {
     throw new HTTPException(404, { message: `Sign in failure: User with email ${body.email} could not be found or does not exist.` });
