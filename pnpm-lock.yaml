@@ -400,9 +400,15 @@ importers:
       argon2:
         specifier: ^0.44.0
         version: 0.44.0
+      db:
+        specifier: workspace:*
+        version: link:../../packages/db
       hono:
         specifier: ^4.12.28
         version: 4.12.29
+      shared:
+        specifier: workspace:*
+        version: link:../../packages/shared
     devDependencies:
       '@types/node':
         specifier: ^20.11.17
