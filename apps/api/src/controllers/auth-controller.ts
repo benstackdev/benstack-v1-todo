@@ -16,7 +16,7 @@ export const authSignupPost = async (c: Context) => {
     !body.password ||
     typeof body.email !== 'string' ||
     typeof body.password !== 'string') {
-    throw new HTTPException(401, { message: "Missing or malformed credentials" });
+    throw new HTTPException(401, { message: "Sign up failure: Missing or malformed credentials" });
   }
 
   // Hash plaintext password (probably should be done on the client but whatever)
@@ -28,7 +28,7 @@ export const authSignupPost = async (c: Context) => {
   if (newUser) {
     return c.json({ success: "ok" });
   } else {
-    throw new HTTPException(500, { message: "User not created" });
+    throw new HTTPException(500, { message: "Sign up failure: User not created" });
   }
 };
 
@@ -39,7 +39,7 @@ export const authSigninPost = async (c: Context) => {
     !body.password ||
     typeof body.email !== 'string' ||
     typeof body.password !== 'string') {
-    throw new HTTPException(401, { message: "Missing or malformed credentials" });
+    throw new HTTPException(401, { message: "Sign in failure: missing or malformed credentials" });
   }
 
   const userRecord = await query.selectUserByEmail(body.email);
@@ -65,5 +65,22 @@ export const authSigninPost = async (c: Context) => {
     return c.json({ success: "ok" });
   } else {
     throw new HTTPException(500, { message: "Session not created" });
+  }
+};
+
+export const authSignoutPost = async (c: Context) => {
+  const body = await c.req.parseBody();
+
+  if (!body.email || typeof body.email !== 'string') {
+    throw new HTTPException(401, { message: "Sign out failure: Missing or malformed credentials" });
+  }
+
+  const userRecord = await query.selectUserByEmail(body.email);
+  const deletedSessions = await query.deleteAllUserSessions(userRecord.id);
+
+  if (deletedSessions) {
+    return c.json({ success: "ok" });
+  } else {
+    throw new HTTPException(500, { message: "Sign out failure: No sessions deleted or error deleting sessions" });
   }
 };
