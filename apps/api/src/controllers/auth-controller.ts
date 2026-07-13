@@ -5,6 +5,10 @@ import { hashPassword } from "../utils/hash-password.js";
 import { verifyPassword } from "../utils/verify-password.js";
 import { generateSessionToken } from "../utils/generate-session-token.js";
 import { generateExpiryTimestamp } from "../utils/generate-expiry-timestamp.js";
+import { deleteCookie, setCookie } from "hono/cookie";
+
+//! Temporary fix, maybe include in .env eventually?
+const sessionTokenName = 'session-token';
 
 // Format: routerRouteAction
 
@@ -62,6 +66,13 @@ export const authSigninPost = async (c: Context) => {
   const session = await query.insertSession(userRecord.id, sessionToken, sessionExpiresAt);
 
   if (session) {
+    // Set session cookie
+    setCookie(c, sessionTokenName, sessionToken, {
+      path: '/',
+      httpOnly: true,
+      expires: sessionExpiresAt
+    });
+
     return c.json({ success: "ok" });
   } else {
     throw new HTTPException(500, { message: "Session not created" });
@@ -79,6 +90,11 @@ export const authSignoutPost = async (c: Context) => {
   const deletedSessions = await query.deleteAllUserSessions(userRecord.id);
 
   if (deletedSessions) {
+    // Remove session cookie
+    deleteCookie(c, sessionTokenName, {
+      path: '/'
+    });
+
     return c.json({ success: "ok" });
   } else {
     throw new HTTPException(500, { message: "Sign out failure: No sessions deleted or error deleting sessions" });
