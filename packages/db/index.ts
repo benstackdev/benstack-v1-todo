@@ -1,4 +1,3 @@
-import { insertUser } from "./src/queries/users-queries.js";
+import * as query from "./src/queries/index.js";
 
-// Public API for exports to other packages and apps in monorepo
-export { insertUser };
+export { query };
