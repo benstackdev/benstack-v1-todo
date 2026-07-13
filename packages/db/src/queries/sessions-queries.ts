@@ -14,13 +14,13 @@ export const insertSession = async (userId: SessionType["userId"], token: Sessio
   }
 };
 
-export const selectSessionById = async (id: SessionType["id"]) => {
+export const selectSessionByToken = async (token: SessionType["token"]) => {
   try {
-    if (!id) return;
+    if (!token) return;
 
     const sessionRecord = await db
       .select().from(session)
-      .where(eq(session.id, id));
+      .where(eq(session.token, token));
 
     return sessionRecord[0];
   } catch (error) {
