@@ -14,7 +14,10 @@ const sessionTokenName = 'session-token';
 
 export const authSignupPost = async (c: Context) => {
   // Body should come in sanitized from api-client
-  const body = await c.req.parseBody();
+  const body = await c.req.json<{
+    email: string,
+    password: string;
+  }>();
 
   if (!body.email ||
     !body.password ||
@@ -37,7 +40,10 @@ export const authSignupPost = async (c: Context) => {
 };
 
 export const authSigninPost = async (c: Context) => {
-  const body = await c.req.parseBody(); // sanitized from api-client
+  const body = await c.req.json<{
+    email: string,
+    password: string;
+  }>(); // sanitized from api-client
 
   if (!body.email ||
     !body.password ||
@@ -83,7 +89,9 @@ export const authSigninPost = async (c: Context) => {
 };
 
 export const authSignoutPost = async (c: Context) => {
-  const body = await c.req.parseBody();
+  const body = await c.req.json<{
+    email: string;
+  }>();
 
   if (!body.email || typeof body.email !== 'string') {
     throw new HTTPException(401, { message: "Sign out failure: Missing or malformed credentials" });

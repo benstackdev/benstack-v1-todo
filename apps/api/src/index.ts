@@ -5,10 +5,10 @@ import auth from './routers/auth-router.js';
 
 const app = new Hono();
 
-app.use('/*', cors());
+app.use('/*', cors({ origin: '*' }));
 
-app.route('/auth', auth);
 app.get('/', (c) => c.text('Hello Hono!'));
+app.route('/auth', auth);
 
 serve({
   fetch: app.fetch,
