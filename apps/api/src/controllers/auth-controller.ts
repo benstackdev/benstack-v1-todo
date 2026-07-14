@@ -5,7 +5,7 @@ import { hashPassword } from "../utils/hash-password.js";
 import { verifyPassword } from "../utils/verify-password.js";
 import { generateSessionToken } from "../utils/generate-session-token.js";
 import { generateExpiryTimestamp } from "../utils/generate-expiry-timestamp.js";
-import { deleteCookie, setCookie } from "hono/cookie";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 
 //! Temporary fix, maybe include in .env eventually?
 const sessionTokenName = 'session-token';
@@ -59,6 +59,9 @@ export const authSigninPost = async (c: Context) => {
     throw new HTTPException(401, { message: "Sign in failure: Incorrect password" });
   }
 
+  // Clean up any expired sessions for user
+  await query.deleteExpiredUserSessions(userRecord.id, new Date());
+
   // Create new session for user
   const sessionToken = generateSessionToken();
   const sessionExpiresAt = generateExpiryTimestamp(3600); // expire in 60 minutes (3600 seconds)
@@ -98,5 +101,23 @@ export const authSignoutPost = async (c: Context) => {
     return c.json({ success: "ok" });
   } else {
     throw new HTTPException(500, { message: "Sign out failure: No sessions deleted or error deleting sessions" });
+  }
+};
+
+export const authVerifyGet = async (c: Context) => {
+  // Get token from body (which is from cookie passed from client)
+  const token = getCookie(c, sessionTokenName);
+
+  if (!token) {
+    throw new HTTPException(400, { message: "Auth verification error: No token could be found" });
+  }
+
+  // Verify token is a session in db
+  const sessionRecord = await query.selectSessionByToken(token);
+
+  if (sessionRecord) {
+    return c.json({ success: "ok" });
+  } else {
+    throw new HTTPException(401, { message: "Auth verification error: No matching token found" });
   }
 };
