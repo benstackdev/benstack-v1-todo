@@ -1,3 +1,3 @@
 import * as User from "./src/schemas/user-schema.js";
-
-export { User }; 
+export { User };
+//# sourceMappingURL=index.d.ts.map

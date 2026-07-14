@@ -4,3 +4,6 @@ packages:
 allowBuilds:
   argon2: true
   esbuild: true
+  unrs-resolver: true
+overrides:
+  shared: link:packages/shared

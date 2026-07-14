@@ -29,5 +29,8 @@
     "prettier": "^3.9.5",
     "typescript": "^7.0.2",
     "typescript-eslint": "^8.63.0"
+  },
+  "dependencies": {
+    "shared": "link:packages/shared"
   }
 }
