@@ -5,10 +5,7 @@ import auth from './routers/auth-router.js';
 
 const app = new Hono();
 
-app.use('/*',
-  cors({
-    origin: 'http://localhost:5173'
-  }));
+app.use('/*', cors());
 
 app.route('/auth', auth);
 app.get('/', (c) => c.text('Hello Hono!'));
