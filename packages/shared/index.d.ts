@@ -1,3 +1,4 @@
 import signupFormSchema from "./src/schemas/sign-up-schema.js";
-export { signupFormSchema };
+import signinFormSchema from "./src/schemas/sign-in-schema.js";
+export { signupFormSchema, signinFormSchema };
 //# sourceMappingURL=index.d.ts.map

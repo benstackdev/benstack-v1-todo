@@ -61,14 +61,14 @@ export const authSigninPost = async (c: Context) => {
   const userRecord = await query.selectUserByEmail(body.email);
 
   if (!userRecord) {
-    throw new HTTPException(404, { message: `Sign in failure: User with email ${body.email} could not be found or does not exist.` });
+    return c.json({ error: `User with email ${body.email} could not be found or does not exist.` });
   }
 
   // Check passwords match
   const passwordMatch = await verifyPassword(userRecord.password, body.password);
 
   if (!passwordMatch) {
-    throw new HTTPException(401, { message: "Sign in failure: Incorrect password" });
+    return c.json({ error: `Incorrect password for user ${body.email}.` });
   }
 
   // Clean up any expired sessions for user
