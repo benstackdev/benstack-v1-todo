@@ -28,7 +28,7 @@ function Signup() {
   const onSubmit = async (data: z.infer<typeof signupFormSchema>) => {
     const result = await authClient("http://localhost:8080/auth/sign-up", data.email, data.password);
 
-    if (result.success) navigate("/");
+    if (result.success) navigate("/sign-in");
     else if (result.error) setServerError(result.error);
   };
 
