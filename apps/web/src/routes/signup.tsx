@@ -8,8 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signup } from "@/api/api-sign-up";
 import { useNavigate } from "react-router";
+import { useState } from "react";
+import AuthServerError from "@/components/auth-server-error";
 
 function Signup() {
+  const [serverError, setServerError] = useState('');
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof signupFormSchema>>({
@@ -26,6 +29,7 @@ function Signup() {
     const result = await signup(data.email, data.password);
 
     if (result.success) navigate("/");
+    else if (result.error) setServerError(result.error);
   };
 
   return (
@@ -34,6 +38,7 @@ function Signup() {
         <CardHeader>
           <CardTitle>Sign Up</CardTitle>
         </CardHeader>
+        {(serverError !== '') ? <AuthServerError title="Sign Up Failed" error={serverError} /> : null}
         <CardContent>
           <form
             id="sign-up"
