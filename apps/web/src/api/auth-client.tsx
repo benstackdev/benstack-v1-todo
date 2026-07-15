@@ -1,5 +1,5 @@
-export const signup = async (email: string, password: string) => {
-  const response = await fetch(`http://localhost:8080/auth/sign-up`, {
+export const authClient = async (path: string, email?: string, password?: string) => {
+  const response = await fetch(path, {
     method: "POST",
     headers: {
       'Content-Type': 'application/json'

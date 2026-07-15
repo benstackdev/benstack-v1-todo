@@ -6,10 +6,10 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { signup } from "@/api/api-sign-up";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import AuthServerError from "@/components/auth-server-error";
+import { authClient } from "@/api/auth-client";
 
 function Signup() {
   const [serverError, setServerError] = useState('');
@@ -26,7 +26,7 @@ function Signup() {
   });
 
   const onSubmit = async (data: z.infer<typeof signupFormSchema>) => {
-    const result = await signup(data.email, data.password);
+    const result = await authClient("http://localhost:8080/auth/sign-up", data.email, data.password);
 
     if (result.success) navigate("/");
     else if (result.error) setServerError(result.error);
