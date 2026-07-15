@@ -5,7 +5,7 @@ import { hashPassword } from "../utils/hash-password.js";
 import { verifyPassword } from "../utils/verify-password.js";
 import { generateSessionToken } from "../utils/generate-session-token.js";
 import { generateExpiryTimestamp } from "../utils/generate-expiry-timestamp.js";
-import { deleteCookie, getCookie, setCookie } from "hono/cookie";
+import { deleteCookie, generateCookie, getCookie, setCookie } from "hono/cookie";
 
 //! Temporary fix, maybe include in .env eventually?
 const sessionTokenName = 'session-token';
@@ -85,6 +85,7 @@ export const authSigninPost = async (c: Context) => {
     setCookie(c, sessionTokenName, sessionToken, {
       path: '/',
       httpOnly: true,
+      sameSite: 'Lax',
       expires: sessionExpiresAt
     });
 
