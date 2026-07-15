@@ -29,6 +29,12 @@ export const authSignupPost = async (c: Context) => {
   // Hash plaintext password (probably should be done on the client but whatever)
   const hashedPassword = await hashPassword(body.password);
 
+  // Check if user already exists in db; if they do, return error
+  const userExists = await query.selectUserByEmail(body.email);
+  if (userExists) {
+    return c.json({ error: `User with email ${body.email} already exists.` });
+  }
+
   // Query the database to insert new user
   const newUser = await query.insertUser(body.email, hashedPassword);
 
