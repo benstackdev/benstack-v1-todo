@@ -1,3 +1,3 @@
-import * as User from "./src/schemas/user-schema.js";
+import signupFormSchema from "./src/schemas/sign-up-schema.js";
 
-export { User }; 
+export { signupFormSchema }; 

@@ -1,3 +1,3 @@
-import * as User from "./src/schemas/user-schema.js";
-export { User };
+import signupFormSchema from "./src/schemas/sign-up-schema.js";
+export { signupFormSchema };
 //# sourceMappingURL=index.js.map
