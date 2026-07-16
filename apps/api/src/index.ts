@@ -2,6 +2,7 @@ import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import auth from './routers/auth-router.js';
+import todo from './routers/todo-router.js';
 
 const app = new Hono();
 
@@ -12,6 +13,7 @@ app.use('/*', cors({
 
 app.get('/', (c) => c.text('Hello Hono!'));
 app.route('/auth', auth);
+app.route('/todo', todo);
 
 serve({
   fetch: app.fetch,
