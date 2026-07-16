@@ -26,3 +26,20 @@ export const selectUserByEmail = async (email: UserType["email"]) => {
     throw error;
   }
 };
+
+export const selectUserById = async (id: UserType["id"]) => {
+  try {
+    if (!id) return;
+
+    const fetchedUser = await db
+      .select()
+      .from(user)
+      .where(
+        eq(user.id, id)
+      );
+
+    return fetchedUser[0];
+  } catch (error) {
+    throw error;
+  }
+};
