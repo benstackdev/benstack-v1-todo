@@ -26,7 +26,7 @@ export const authSignupPost = async (c: Context) => {
     throw new HTTPException(401, { message: "Sign up failure: Missing or malformed credentials" });
   }
 
-  // Hash plaintext password (probably should be done on the client but whatever)
+  // Hash plaintext password
   const hashedPassword = await hashPassword(body.password);
 
   // Check if user already exists in db; if they do, return error
@@ -110,7 +110,9 @@ export const authSignoutPost = async (c: Context) => {
   if (deletedSessions) {
     // Remove session cookie
     deleteCookie(c, sessionTokenName, {
-      path: '/'
+      path: '/',
+      httpOnly: true,
+      sameSite: 'Lax'
     });
 
     return c.json({ success: "ok" });
@@ -124,15 +126,16 @@ export const authVerifyGet = async (c: Context) => {
   const token = getCookie(c, sessionTokenName);
 
   if (!token) {
-    throw new HTTPException(400, { message: "Auth verification error: No token could be found" });
+    return c.json({ error: "User could not be authenticated" });
   }
 
   // Verify token is a session in db
   const sessionRecord = await query.selectSessionByToken(token);
+  const sessionUser = await query.selectUserById(sessionRecord?.userId);
 
-  if (sessionRecord) {
-    return c.json({ success: "ok" });
+  if (sessionRecord && sessionUser) {
+    return c.json({ success: "ok", user: sessionUser });
   } else {
-    throw new HTTPException(401, { message: "Auth verification error: No matching token found" });
+    return c.json({ error: "User could not be authenticated" });
   }
 };
