@@ -1,4 +1,4 @@
-import { authClient } from "@/api/auth-client";
+import { authClientPost } from "@/api/auth-client";
 import AuthServerError from "@/components/auth-server-error";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,7 +25,7 @@ function Signin() {
   });
 
   const onSubmit = async (data: z.infer<typeof signinFormSchema>) => {
-    const result = await authClient("http://localhost:8080/auth/sign-in", data.email, data.password);
+    const result = await authClientPost("http://localhost:8080/auth/sign-in", data.email, data.password);
 
     if (result.success) navigate("/");
     else if (result.error) setServerError(result.error);

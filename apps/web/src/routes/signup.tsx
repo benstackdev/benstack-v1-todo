@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import AuthServerError from "@/components/auth-server-error";
-import { authClient } from "@/api/auth-client";
+import { authClientPost } from "@/api/auth-client";
 
 function Signup() {
   const [serverError, setServerError] = useState('');
@@ -26,7 +26,7 @@ function Signup() {
   });
 
   const onSubmit = async (data: z.infer<typeof signupFormSchema>) => {
-    const result = await authClient("http://localhost:8080/auth/sign-up", data.email, data.password);
+    const result = await authClientPost("http://localhost:8080/auth/sign-up", data.email, data.password);
 
     if (result.success) navigate("/sign-in");
     else if (result.error) setServerError(result.error);
