@@ -1,9 +1,11 @@
 import { authClientVerify } from "@/api/auth-client";
 import { useAuth } from "@/context/auth-provider";
 import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 function AuthVerifier({ children }) {
-  const { userEmail, setAuth } = useAuth();
+  const navigate = useNavigate();
+  const { userEmail, isVerified, setAuth } = useAuth();
 
   useEffect(() => {
     const verifySession = async () => {
@@ -17,6 +19,10 @@ function AuthVerifier({ children }) {
 
     verifySession();
   });
+
+  useEffect(() => {
+    if (!isVerified) navigate("/sign-in");
+  }, [isVerified, navigate]);
 
   return children;
 }
