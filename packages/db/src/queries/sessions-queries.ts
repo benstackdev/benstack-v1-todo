@@ -6,9 +6,9 @@ type SessionType = typeof session.$inferInsert;
 
 export const insertSession = async (userId: SessionType["userId"], token: SessionType["token"], expiresAt: SessionType["expiresAt"]) => {
   try {
-    const SessionType = await db.insert(session).values({ userId, token, expiresAt }).returning();
+    const newSession = await db.insert(session).values({ userId, token, expiresAt }).returning();
 
-    return SessionType;
+    return newSession;
   } catch (error) {
     throw error;
   }
