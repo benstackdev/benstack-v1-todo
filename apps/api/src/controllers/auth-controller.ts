@@ -30,13 +30,13 @@ export const authSignupPost = async (c: Context) => {
   const hashedPassword = await hashPassword(body.password);
 
   // Check if user already exists in db; if they do, return error
-  const userExists = await query.selectUserByEmail(body.email);
+  const userExists = await query.user.selectUserByEmail(body.email);
   if (userExists) {
     return c.json({ error: `User with email ${body.email} already exists.` });
   }
 
   // Query the database to insert new user
-  const newUser = await query.insertUser(body.email, hashedPassword);
+  const newUser = await query.user.insertUser(body.email, hashedPassword);
 
   if (newUser) {
     return c.json({ success: "ok" });
@@ -58,7 +58,7 @@ export const authSigninPost = async (c: Context) => {
     throw new HTTPException(401, { message: "Sign in failure: missing or malformed credentials" });
   }
 
-  const userRecord = await query.selectUserByEmail(body.email);
+  const userRecord = await query.user.selectUserByEmail(body.email);
 
   if (!userRecord) {
     return c.json({ error: `User with email ${body.email} could not be found or does not exist.` });
@@ -72,13 +72,13 @@ export const authSigninPost = async (c: Context) => {
   }
 
   // Clean up any expired sessions for user
-  await query.deleteExpiredUserSessions(userRecord.id, new Date());
+  await query.session.deleteExpiredUserSessions(userRecord.id, new Date());
 
   // Create new session for user
   const sessionToken = generateSessionToken();
   const sessionExpiresAt = generateExpiryTimestamp(3600); // expire in 60 minutes (3600 seconds)
 
-  const session = await query.insertSession(userRecord.id, sessionToken, sessionExpiresAt);
+  const session = await query.session.insertSession(userRecord.id, sessionToken, sessionExpiresAt);
 
   if (session) {
     // Set session cookie
@@ -104,8 +104,8 @@ export const authSignoutPost = async (c: Context) => {
     throw new HTTPException(401, { message: "Sign out failure: Missing or malformed credentials" });
   }
 
-  const userRecord = await query.selectUserByEmail(body.email);
-  const deletedSessions = await query.deleteAllUserSessions(userRecord.id);
+  const userRecord = await query.user.selectUserByEmail(body.email);
+  const deletedSessions = await query.session.deleteAllUserSessions(userRecord.id);
 
   if (deletedSessions) {
     // Remove session cookie
@@ -130,8 +130,8 @@ export const authVerifyGet = async (c: Context) => {
   }
 
   // Verify token is a session in db
-  const sessionRecord = await query.selectSessionByToken(token);
-  const sessionUser = await query.selectUserById(sessionRecord?.userId);
+  const sessionRecord = await query.session.selectSessionByToken(token);
+  const sessionUser = await query.user.selectUserById(sessionRecord?.userId);
 
   if (sessionRecord && sessionUser) {
     return c.json({ success: "ok", user: sessionUser });
