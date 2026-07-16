@@ -13,7 +13,7 @@ function AuthVerifier({ children }) {
       console.log(status);
       if (status.success) {
         setAuth(status.user.email, true);
-        console.log(`email: ${userEmail}`);
+        console.log(`verified: ${isVerified}`);
       }
     };
 
@@ -21,7 +21,8 @@ function AuthVerifier({ children }) {
   });
 
   useEffect(() => {
-    if (!isVerified) navigate("/sign-in");
+    if (isVerified) navigate("/");
+    else navigate("/sign-in");
   }, [isVerified, navigate]);
 
   return children;

@@ -1,7 +1,7 @@
 import { authClientPost } from "@/api/auth-client";
 import AuthServerError from "@/components/auth-server-error";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,9 +33,15 @@ function Signin() {
 
   return (
     <div className="flex justify-center">
-      <Card className={`flex-1 max-w-xs md:max-w-md mt-8`}>
-        <CardHeader>
+      <Card className={`flex-1 max-w-xs md:max-w-sm mt-8`}>
+        <CardHeader className={`flex flex-col`}>
           <CardTitle>Sign In</CardTitle>
+          <CardAction className={`flex items-center gap-x-2 text-zinc-500`}>
+            Don't have an account?
+            <Button variant="link" onClick={() => navigate("/sign-up")} className={`p-0 text-zinc-500`}>
+              Sign Up
+            </Button>
+          </CardAction>
         </CardHeader>
         {(serverError !== '') ? <AuthServerError title="Sign In Failed" error={serverError} /> : null}
         <CardContent>

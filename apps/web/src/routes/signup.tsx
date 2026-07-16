@@ -2,7 +2,7 @@ import { signupFormSchema } from "shared";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -34,9 +34,15 @@ function Signup() {
 
   return (
     <div className="flex justify-center">
-      <Card className={`flex-1 max-w-xs md:max-w-md mt-8`}>
-        <CardHeader>
+      <Card className={`flex-1 max-w-xs md:max-w-sm mt-8`}>
+        <CardHeader className={`flex flex-col`}>
           <CardTitle>Sign Up</CardTitle>
+          <CardAction className={`flex items-center gap-x-2 text-zinc-500`}>
+            Already have an account?
+            <Button variant="link" onClick={() => navigate("/sign-in")} className={`p-0 text-zinc-500`}>
+              Sign In
+            </Button>
+          </CardAction>
         </CardHeader>
         {(serverError !== '') ? <AuthServerError title="Sign Up Failed" error={serverError} /> : null}
         <CardContent>
