@@ -46,13 +46,16 @@ export const selectAllTodosByUserId = async (userId: TodoType["userId"]) => {
   }
 };
 
-export const updateTodoContentById = async (id: TodoType["id"], newContent: TodoType["content"]) => {
+export const updateTodoById = async (id: TodoType["id"], newContent?: TodoType["content"], newIsComplete?: TodoType["isComplete"]) => {
   try {
     if (!id) return;
 
     const updatedTodo = db
       .update(todo)
-      .set({ content: newContent })
+      .set({
+        content: newContent || todo.content,
+        isComplete: newIsComplete || todo.isComplete
+      })
       .where(eq(todo.id, id));
 
     return updatedTodo;
