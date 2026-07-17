@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { db } from "../../client.js";
 import { todo } from "../schema/todo.js";
 
@@ -16,14 +16,14 @@ export const insertTodo = async (userId: TodoType["userId"], content: TodoType["
   }
 };
 
-export const selectTodoById = async (id: TodoType["id"]) => {
+export const selectTodoById = async (id: TodoType["id"], userId: TodoType["userId"]) => {
   try {
     if (!id) return;
 
     const selectedTodo = await db
       .select()
       .from(todo)
-      .where(eq(todo.id, id));
+      .where(and(eq(todo.id, id), eq(todo.userId, userId)));
 
     return selectedTodo[0];
   } catch (error) {
@@ -46,7 +46,7 @@ export const selectAllTodosByUserId = async (userId: TodoType["userId"]) => {
   }
 };
 
-export const updateTodoById = async (id: TodoType["id"], newContent?: TodoType["content"], newIsComplete?: TodoType["isComplete"]) => {
+export const updateTodoById = async (id: TodoType["id"], userId: TodoType["userId"], newContent?: TodoType["content"], newIsComplete?: TodoType["isComplete"]) => {
   try {
     if (!id) return;
 
@@ -56,7 +56,8 @@ export const updateTodoById = async (id: TodoType["id"], newContent?: TodoType["
         content: newContent || todo.content,
         isComplete: newIsComplete || todo.isComplete
       })
-      .where(eq(todo.id, id));
+      .where(and(eq(todo.id, id), eq(todo.userId, userId)))
+      .returning();
 
     return updatedTodo;
   } catch (error) {
@@ -64,28 +65,13 @@ export const updateTodoById = async (id: TodoType["id"], newContent?: TodoType["
   }
 };
 
-export const toggleTodoById = async (id: TodoType["id"]) => {
-  try {
-    if (!id) return;
-
-    const updatedTodo = db
-      .update(todo)
-      .set({ isComplete: !todo.isComplete })
-      .where(eq(todo.id, id));
-
-    return updatedTodo;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const deleteTodoById = async (id: TodoType["id"]) => {
+export const deleteTodoById = async (id: TodoType["id"], userId: TodoType["userId"]) => {
   try {
     if (!id) return;
 
     const deletedTodo = db
       .delete(todo)
-      .where(eq(todo.id, id))
+      .where(and(eq(todo.id, id), eq(todo.userId, userId)))
       .returning();
 
     return deletedTodo;
