@@ -1,4 +1,4 @@
-import type { Context } from "hono";
+import type { Context, Next } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { query } from "db";
 import { hashPassword } from "../utils/hash-password.js";
@@ -121,7 +121,7 @@ export const authSignoutPost = async (c: Context) => {
   }
 };
 
-export const authVerifyGet = async (c: Context) => {
+export const authVerify = async (c: Context, next: Next) => {
   // Get token from body (which is from cookie passed from client)
   const token = getCookie(c, sessionTokenName);
 
@@ -134,6 +134,8 @@ export const authVerifyGet = async (c: Context) => {
   const sessionUser = await query.user.selectUserById(sessionRecord?.userId);
 
   if (sessionRecord && sessionUser) {
+    c.set('userId', sessionRecord.userId);
+    await next();
     return c.json({ success: "ok", user: sessionUser });
   } else {
     return c.json({ error: "User could not be authenticated" });
