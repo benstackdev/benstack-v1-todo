@@ -4,7 +4,7 @@ import { authSigninPost, authSignoutPost, authSignupPost, authVerify } from "../
 const auth = new Hono();
 
 auth.get('/', (c) => c.text('Auth API'));
-auth.get('/verify', authVerify, (c: Context) => c.json({ success: "ok" }));
+auth.get('/verify', authVerify);
 auth.post('/sign-up', authSignupPost);
 auth.post('/sign-in', authSigninPost);
 auth.post('/sign-out', authSignoutPost);

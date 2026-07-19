@@ -121,7 +121,7 @@ export const authSignoutPost = async (c: Context) => {
   }
 };
 
-export const authVerify = async (c: Context, next: Next) => {
+export const authVerifyMiddleware = async (c: Context, next: Next) => {
   // Get token from body (which is from cookie passed from client)
   const token = getCookie(c, sessionTokenName);
 
@@ -136,6 +136,25 @@ export const authVerify = async (c: Context, next: Next) => {
   if (sessionRecord && sessionUser) {
     c.set('userId', sessionRecord.userId);
     await next();
+  } else {
+    return c.json({ error: "User could not be authenticated" });
+  }
+};
+
+export const authVerify = async (c: Context) => {
+  // Get token from body (which is from cookie passed from client)
+  const token = getCookie(c, sessionTokenName);
+
+  if (!token) {
+    return c.json({ error: "User could not be authenticated" });
+  }
+
+  // Verify token is a session in db
+  const sessionRecord = await query.session.selectSessionByToken(token);
+  const sessionUser = await query.user.selectUserById(sessionRecord?.userId);
+
+  if (sessionRecord && sessionUser) {
+    c.set('userId', sessionRecord.userId);
     return c.json({ success: "ok", user: sessionUser });
   } else {
     return c.json({ error: "User could not be authenticated" });
