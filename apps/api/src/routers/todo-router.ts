@@ -4,10 +4,12 @@ import { todoIdDelete, todoIdGet, todoNewPost, todoUpdateByIdPost, todoUserAllGe
 
 const todo = new Hono();
 
-todo.post("/", authVerifyMiddleware, todoNewPost);          // create
-todo.get("/", authVerifyMiddleware, todoUserAllGet);        // read all
-todo.get("/:id", authVerifyMiddleware, todoIdGet);          // read one
-todo.put("/:id", authVerifyMiddleware, todoUpdateByIdPost); // update one
-todo.delete("/:id", authVerifyMiddleware, todoIdDelete);    // delete one
+todo.use("/*", authVerifyMiddleware);
+
+todo.post("/", todoNewPost);          // create
+todo.get("/", todoUserAllGet);        // read all
+todo.get("/:id", todoIdGet);          // read one
+todo.put("/:id", todoUpdateByIdPost); // update one
+todo.delete("/:id", todoIdDelete);    // delete one
 
 export default todo;
