@@ -1,4 +1,5 @@
 import SignoutButton from "@/components/sign-out-button";
+import TodoForm from "@/components/todo-form";
 import { useAuth } from "@/context/auth-provider";
 
 function Home() {
@@ -10,6 +11,7 @@ function Home() {
         <h1 className={`font-semibold`}>Welcome, {userEmail}</h1>
         <SignoutButton />
       </div>
+      <TodoForm />
     </div>
   );
 }
