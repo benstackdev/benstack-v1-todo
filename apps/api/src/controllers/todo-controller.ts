@@ -31,6 +31,8 @@ export const todoNewPost = async (c: Context) => {
 // GET ALL TODOS BY USER
 export const todoUserAllGet = async (c: Context) => {
   const userId = c.var.userId;
+  // can only be true or false, but queries are strings
+  const completed: string | undefined = c.req.query('completed');
 
   if (!userId || typeof userId !== 'string') {
     throw new HTTPException(401, { message: "Failed to fetch todo items: invalid user ID" });
@@ -39,6 +41,16 @@ export const todoUserAllGet = async (c: Context) => {
   const todosList = await query.todo.selectAllTodosByUserId(userId);
 
   if (todosList) {
+    if (completed !== undefined) {
+      switch (completed) {
+        case "true":
+          return c.json({ success: "ok", data: todosList.filter(todo => todo.isComplete) });
+        case "false":
+          return c.json({ success: "ok", data: todosList.filter(todo => !todo.isComplete) });
+        default:
+          return c.json({ error: "Invalid query" });
+      }
+    }
     return c.json({ success: "ok", data: todosList });
   } else {
     throw new HTTPException(500, { message: "Failed to fetch todos" });
