@@ -12,6 +12,7 @@ function Home() {
         <SignoutButton />
       </div>
       <TodoForm />
+
     </div>
   );
 }

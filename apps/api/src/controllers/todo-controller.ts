@@ -81,7 +81,7 @@ export const todoIdGet = async (c: Context) => {
 };
 
 // UPDATE TODO BY ID
-export const todoUpdateByIdPost = async (c: Context) => {
+export const todoUpdateByIdPut = async (c: Context) => {
   const userId = c.var.userId;
 
   if (!userId || typeof userId !== 'string') {

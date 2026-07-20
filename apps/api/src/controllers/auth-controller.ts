@@ -6,9 +6,10 @@ import { verifyPassword } from "../utils/verify-password.js";
 import { generateSessionToken } from "../utils/generate-session-token.js";
 import { generateExpiryTimestamp } from "../utils/generate-expiry-timestamp.js";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
+import "dotenv/config";
 
 //! Temporary fix, maybe include in .env eventually?
-const sessionTokenName = 'session-token';
+const sessionTokenName = process.env.API_SESSION_TOKEN_NAME!;
 
 // Format: routerRouteAction
 
@@ -79,6 +80,8 @@ export const authSigninPost = async (c: Context) => {
   const sessionExpiresAt = generateExpiryTimestamp(3600); // expire in 60 minutes (3600 seconds)
 
   const session = await query.session.insertSession(userRecord.id, sessionToken, sessionExpiresAt);
+
+  console.log(sessionTokenName);
 
   if (session) {
     // Set session cookie

@@ -3,8 +3,11 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import auth from './routers/auth-router.js';
 import todo from './routers/todo-router.js';
+import dotenv from "dotenv";
 
 const app = new Hono();
+
+dotenv.config();
 
 app.use('/*', cors({
   origin: 'http://localhost:5173',
