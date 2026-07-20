@@ -1,26 +1,28 @@
 import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
-import { todoContentSchema } from "shared";
+import { todoSchema } from "shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { todoCreatePost } from "@/api/todo-client";
-import { Field, FieldError } from "./ui/field";
+import { Field, FieldError, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Plus } from "lucide-react";
+import { Checkbox } from "./ui/checkbox";
 
 function TodoForm() {
   const [serverError, setServerError] = useState('');
-  const form = useForm<z.infer<typeof todoContentSchema>>({
-    resolver: zodResolver(todoContentSchema),
+  const form = useForm<z.infer<typeof todoSchema>>({
+    resolver: zodResolver(todoSchema),
     mode: "onSubmit",
     defaultValues: {
       content: "",
+      isComplete: false
     }
   });
 
-  const onSubmit = async (data: z.infer<typeof todoContentSchema>) => {
-    const result = await todoCreatePost(data.content);
+  const onSubmit = async (data: z.infer<typeof todoSchema>) => {
+    const result = await todoCreatePost(data.content, data.isComplete);
 
     if (result.success) form.reset(); // reset form state
     else if (result.error) setServerError(result.error);
@@ -32,14 +34,14 @@ function TodoForm() {
       <form
         id="todo"
         onSubmit={form.handleSubmit(onSubmit)}
-        className={`w-full`}
+        className={`w-full flex flex-col gap-3`}
       >
         <Controller
           name="content"
           control={form.control}
           render={({ field, fieldState }) => {
             return (
-              <Field data-invalid={fieldState.invalid} orientation="responsive">
+              <Field data-invalid={fieldState.invalid}>
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 <Input
                   {...field}
@@ -48,13 +50,33 @@ function TodoForm() {
                   aria-invalid={fieldState.invalid}
                   placeholder="New todo..."
                 />
-                <Button form="todo" type="submit">
-                  <Plus /> Add
-                </Button>
               </Field>
             );
           }}
         />
+        <Controller
+          name="isComplete"
+          control={form.control}
+          render={({ field, fieldState }) => {
+            return (
+              <Field data-invalid={fieldState.invalid} orientation="horizontal">
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                <Checkbox
+                  id={field.name}
+                  name={field.name}
+                  onCheckedChange={(checked) => field.onChange(checked)}
+                  checked={field.value}
+                />
+                <FieldLabel htmlFor={field.name}>
+                  Mark as complete
+                </FieldLabel>
+              </Field>
+            );
+          }}
+        />
+        <Button form="todo" type="submit">
+          <Plus /> Add
+        </Button>
       </form>
     </div>
   );

@@ -4,10 +4,10 @@ import { todo } from "../schema/todo.js";
 
 type TodoType = typeof todo.$inferInsert;
 
-export const insertTodo = async (userId: TodoType["userId"], content: TodoType["content"]) => {
+export const insertTodo = async (userId: TodoType["userId"], content: TodoType["content"], isComplete: TodoType["isComplete"]) => {
   try {
     const newTodo = await db.insert(todo).values({
-      userId, content
+      userId, content, isComplete
     }).returning();
 
     return newTodo;

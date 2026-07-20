@@ -8,7 +8,8 @@ import { HTTPException } from "hono/http-exception";
 export const todoNewPost = async (c: Context) => {
   const userId = c.var.userId;
   const body = await c.req.json<{
-    content: string;
+    content: string,
+    isComplete: boolean;
   }>();
 
   if (!userId || typeof userId !== 'string') {
@@ -19,7 +20,7 @@ export const todoNewPost = async (c: Context) => {
     throw new HTTPException(401, { message: "Failed to create todo item: content could not be found" });
   }
 
-  const newTodo = await query.todo.insertTodo(userId, body.content);
+  const newTodo = await query.todo.insertTodo(userId, body.content, body.isComplete);
 
   if (newTodo) {
     return c.json({ success: "ok", data: newTodo });

@@ -1,12 +1,17 @@
-export const todoCreatePost = async (content: string) => {
-  const response = await fetch("http://localhost:8080/todo", {
-    method: "POST",
+import * as z from "zod";
+import { todoSchema } from "shared";
+
+type APIMethodType = "GET" | "POST" | "PUT" | "DELETE";
+
+export const todoRequest = async (path: string, method: APIMethodType, data?: z.infer<typeof todoSchema>) => {
+  const response = await fetch(`http://localhost:8080/todo${path}`, {
+    method,
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     },
     credentials: 'include',
-    body: JSON.stringify({ content })
+    body: JSON.stringify(data)
   });
 
   if (!response.ok) {
@@ -17,3 +22,5 @@ export const todoCreatePost = async (content: string) => {
 
   return result;
 };
+
+export const todoCreatePost = async (content: string, isComplete: boolean) => todoRequest("", "POST", { content, isComplete });
