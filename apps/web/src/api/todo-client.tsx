@@ -24,3 +24,7 @@ export const todoRequest = async (path: string, method: APIMethodType, data?: z.
 };
 
 export const todoCreatePost = async (content: string, isComplete: boolean) => todoRequest("", "POST", { content, isComplete });
+
+export const todoAllGet = async (query?: string) => todoRequest(`${query}`, "GET");
+
+export const todoUpdatePut = async (id: string, content?: string, isComplete?: boolean) => todoRequest(`/${id}`, "PUT", { content, isComplete });

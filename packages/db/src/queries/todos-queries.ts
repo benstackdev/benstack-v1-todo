@@ -2,7 +2,7 @@ import { eq, and } from "drizzle-orm";
 import { db } from "../../client.js";
 import { todo } from "../schema/todo.js";
 
-type TodoType = typeof todo.$inferInsert;
+export type TodoType = typeof todo.$inferInsert;
 
 export const insertTodo = async (userId: TodoType["userId"], content: TodoType["content"], isComplete: TodoType["isComplete"]) => {
   try {
@@ -53,8 +53,8 @@ export const updateTodoById = async (id: TodoType["id"], userId: TodoType["userI
     const updatedTodo = db
       .update(todo)
       .set({
-        content: newContent || todo.content,
-        isComplete: newIsComplete || todo.isComplete
+        content: newContent ?? todo.content,
+        isComplete: newIsComplete ?? todo.isComplete
       })
       .where(and(eq(todo.id, id), eq(todo.userId, userId)))
       .returning();

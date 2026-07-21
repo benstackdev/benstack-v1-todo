@@ -10,7 +10,7 @@ import { Button } from "./ui/button";
 import { Plus } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
 
-function TodoForm() {
+function TodoForm({ setRefreshTodos }: { setRefreshTodos: React.Dispatch<React.SetStateAction<boolean>>; }) {
   const [serverError, setServerError] = useState('');
   const form = useForm<z.infer<typeof todoSchema>>({
     resolver: zodResolver(todoSchema),
@@ -24,12 +24,15 @@ function TodoForm() {
   const onSubmit = async (data: z.infer<typeof todoSchema>) => {
     const result = await todoCreatePost(data.content, data.isComplete);
 
-    if (result.success) form.reset(); // reset form state
+    if (result.success) {
+      setRefreshTodos(true);
+      form.reset(); // reset form state
+    }
     else if (result.error) setServerError(result.error);
   };
 
   return (
-    <div className={`flex justify-center w-full mt-8 max-w-xs`}>
+    <div className={`flex flex-col items-center w-full mt-8 max-w-xs`}>
       {(serverError !== "") ? serverError : null}
       <form
         id="todo"
