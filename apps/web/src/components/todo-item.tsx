@@ -2,36 +2,51 @@ import type { TodoItemType } from "@/routes/home";
 import { useState } from "react";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
-import { Check, X } from "lucide-react";
-import { todoUpdatePut } from "@/api/todo-client";
+import { Check, Trash2, X } from "lucide-react";
+import { todoItemDelete, todoUpdatePut } from "@/api/todo-client";
 
 function TodoItem({ item, setRefreshTodos }: { item: TodoItemType, setRefreshTodos: React.Dispatch<React.SetStateAction<boolean>>; }) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  const toggleCompleted = async (event: React.SubmitEvent) => {
-    event.preventDefault();
+  const toggleCompleted = async () => {
     const completed = !item.isComplete;
     console.log(completed);
     await todoUpdatePut(item.id, item.content, completed);
     setRefreshTodos(true);
   };
 
-  const notEditing = (
-    <Card>
-      <CardContent className={`flex justify-between items-center`}>
-        <p className={`text-lg`}>
+  const deleteTodoItem = async () => {
+    const deletedItem = await todoItemDelete(item.id);
+    console.log(deletedItem);
+    setRefreshTodos(true);
+  };
+
+  return (
+    <Card className={`p-2`}>
+      <CardContent className={`px-1 flex justify-between items-center`}>
+        <Button
+          variant="ghost"
+          className={`text-md`}
+          onClick={() => setIsEditing(!isEditing)}>
           {item.content}
-        </p>
-        <form onSubmit={toggleCompleted}>
-          <Button type="submit" variant="secondary" size="icon">
+        </Button>
+        <div className={`flex gap-1`}>
+          <Button
+            variant="secondary"
+            size="icon"
+            onClick={toggleCompleted}>
             {item.isComplete ? <X /> : <Check />}
           </Button>
-        </form>
+          <Button
+            variant="destructive"
+            size="icon"
+            onClick={deleteTodoItem}>
+            <Trash2 />
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
-
-  return notEditing;
 }
 
 export default TodoItem;

@@ -28,3 +28,5 @@ export const todoCreatePost = async (content: string, isComplete: boolean) => to
 export const todoAllGet = async (query?: string) => todoRequest(`${query}`, "GET");
 
 export const todoUpdatePut = async (id: string, content?: string, isComplete?: boolean) => todoRequest(`/${id}`, "PUT", { content, isComplete });
+
+export const todoItemDelete = async (id: string) => todoRequest(`/${id}`, "DELETE");
