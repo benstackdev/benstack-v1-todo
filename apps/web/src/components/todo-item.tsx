@@ -1,5 +1,5 @@
 import type { TodoItemType } from "@/routes/home";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { Check, Trash2, X } from "lucide-react";
@@ -45,16 +45,35 @@ function TodoItem({ item, setRefreshTodos }: { item: TodoItemType, setRefreshTod
   };
 
   const contentNotEditing = (
-    <Button
-      variant="ghost"
-      className={`text-md`}
-      onClick={() => setIsEditing(true)}>
-      {item.content}
-    </Button>
+    <>
+      <Button
+        variant="ghost"
+        className={`text-md`}
+        onClick={() => setIsEditing(true)}>
+        {item.content}
+      </Button>
+      <div className={`flex gap-1`}>
+        <Button
+          variant="secondary"
+          size="icon"
+          onClick={toggleCompleted}>
+          {item.isComplete ? <X /> : <Check />}
+        </Button>
+        <Button
+          variant="destructive"
+          size="icon"
+          onClick={deleteTodoItem}>
+          <Trash2 />
+        </Button>
+      </div>
+    </>
   );
 
   const contentEditing = (
-    <form id="update-todo-content" onSubmit={contentForm.handleSubmit(updateTodoContent)}>
+    <form
+      id="update-todo-content"
+      onSubmit={contentForm.handleSubmit(updateTodoContent)}
+      className={`w-full`}>
       <Controller
         name="content"
         control={contentForm.control}
@@ -87,20 +106,6 @@ function TodoItem({ item, setRefreshTodos }: { item: TodoItemType, setRefreshTod
     <Card className={`p-2`}>
       <CardContent className={`px-1 flex justify-between items-center`}>
         {isEditing ? contentEditing : contentNotEditing}
-        <div className={`flex gap-1`}>
-          <Button
-            variant="secondary"
-            size="icon"
-            onClick={toggleCompleted}>
-            {item.isComplete ? <X /> : <Check />}
-          </Button>
-          <Button
-            variant="destructive"
-            size="icon"
-            onClick={deleteTodoItem}>
-            <Trash2 />
-          </Button>
-        </div>
       </CardContent>
     </Card>
   );
