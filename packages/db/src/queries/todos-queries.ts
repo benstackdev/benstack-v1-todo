@@ -1,4 +1,4 @@
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { db } from "../../client.js";
 import { todo } from "../schema/todo.js";
 
@@ -38,7 +38,8 @@ export const selectAllTodosByUserId = async (userId: TodoType["userId"]) => {
     const userTodos = await db
       .select()
       .from(todo)
-      .where(eq(todo.userId, userId));
+      .where(eq(todo.userId, userId))
+      .orderBy(desc(todo.createdAt));
 
     return userTodos;
   } catch (error) {

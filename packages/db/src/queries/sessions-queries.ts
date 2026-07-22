@@ -1,6 +1,6 @@
 import { db } from "../../client.js";
 import { session } from "../schema/sessions.js";
-import { and, eq, lt } from "drizzle-orm";
+import { and, eq, lt, desc } from "drizzle-orm";
 
 type SessionType = typeof session.$inferInsert;
 
