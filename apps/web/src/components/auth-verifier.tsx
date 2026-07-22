@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 
 function AuthVerifier({ children }) {
   const navigate = useNavigate();
-  const { userEmail, isVerified, setAuth } = useAuth();
+  const { isVerified, setAuth } = useAuth();
 
   useEffect(() => {
     const verifySession = async () => {
